@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>If Your Mind Is Loud</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1b1f3b, #0b0d18);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden; /* allow vertical scroll */
+}
+
+/* ⭐ Moving stars */
+body::before {
+    content: "";
+    position: fixed; /* fixed so it doesn’t scroll with content */
+    inset: 0;
+    background-image: radial-gradient(#ffffff33 1px, transparent 1px);
+    background-size: 35px 35px;
+    animation: starDrift 80s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes starDrift {
+    from { background-position: 0 0; }
+    to { background-position: 1500px 1500px; }
+}
+
+.card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 26px;
+    padding: 26px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 40px #000;
+    text-align: center;
+}
+
+/* 💓 Heart glow image */
+.image-wrap {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    overflow: hidden;
+    animation: heartbeat 4s ease-in-out infinite;
+}
+
+.image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@keyframes heartbeat {
+    0% { box-shadow: 0 0 18px rgba(255,180,200,0.35); transform: scale(1); }
+    50% { box-shadow: 0 0 38px rgba(255,180,200,0.65); transform: scale(1.03); }
+    100% { box-shadow: 0 0 18px rgba(255,180,200,0.35); transform: scale(1); }
+}
+
+.image-wrap.active {
+    animation: heartbeat-strong 3.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat-strong {
+    0% { box-shadow: 0 0 25px rgba(255,200,215,0.5); transform: scale(1); }
+    50% { box-shadow: 0 0 55px rgba(255,200,215,0.9); transform: scale(1.05); }
+    100% { box-shadow: 0 0 25px rgba(255,200,215,0.5); transform: scale(1); }
+}
+
+h1 {
+    font-size: 20px;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.buttons button {
+    width: 100%;
+    margin: 8px 0;
+    padding: 13px;
+    border-radius: 16px;
+    border: none;
+    background: rgba(255,255,255,0.12);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+    z-index: 3;
+}
+
+.buttons button:hover {
+    background: rgba(255,255,255,0.22);
+}
+
+.message {
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 1.7;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    position: relative;
+    z-index: 3;
+}
+
+.message.show {
+    opacity: 1;
+}
+
+.final {
+    margin-top: 12px;
+    font-size: 14px;
+    opacity: 0.85;
+    font-style: italic;
+}
+
+/* 💖 Floating hearts */
+.heart {
+    position: fixed; /* fixed so they float relative to viewport */
+    bottom: -20px;
+    font-size: 18px;
+    opacity: 0.8;
+    animation: floatUp 6s ease-in infinite;
+    pointer-events: none;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) scale(0.8); opacity: 0; }
+    20% { opacity: 0.8; }
+    100% { transform: translateY(-80vh) scale(1.3); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <div class="image-wrap" id="heartGlow">
+        <img src="him.jpeg" alt="You">
+    </div>
+
+    <h1>If your mind is loud right now… choose what you’re feeling 🤍</h1>
+
+    <div class="buttons">
+        <button onclick="showMessage(0)">My mind won’t stop</button>
+        <button onclick="showMessage(1)">I feel distant</button>
+        <button onclick="showMessage(2)">I’m scared of losing you</button>
+    </div>
+
+    <div id="message" class="message"></div>
+</div>
+
+<script>
+const messages = [
+`Pause for a second.
+Take a slow breath.
+
+I know your thoughts spiral when things hurt.
+I need you to know this — I’m still here.
+I didn’t forget you. I won’t.
+
+I’m sorry for hurting you.
+Please forgive me.`,
+
+`Distance doesn’t mean absence.
+Even when we feel far,
+you’ve never left my heart.
+
+I understand your overthinking.
+I should have been gentler.
+
+I’m truly sorry.
+Please forgive me.`,
+
+`You’re not replaceable.
+Not now. Not ever.
+
+I know I made you question things,
+and I hate that I caused that pain.
+
+I choose you.
+I’m sorry for hurting you.
+Please forgive me.`
+];
+
+function showMessage(index) {
+    const box = document.getElementById("message");
+    const glow = document.getElementById("heartGlow");
+
+    if (navigator.vibrate) { navigator.vibrate(25); }
+    glow.classList.add("active");
+
+    box.innerHTML = messages[index].replace(/\n/g, "<br>") +
+        `<div class="final">I’m here. Even now. Even like this.</div>`;
+
+    box.classList.add("show");
+
+    createHearts();
+}
+
+function createHearts() {
+    for (let i = 0; i < 12; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDelay = Math.random() * 3 + "s";
+        heart.style.fontSize = 14 + Math.random() * 14 + "px";
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => { heart.remove(); }, 7000);
+    }
+}
+</script>
+
+</body>
+</html>
